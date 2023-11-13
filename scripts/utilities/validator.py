@@ -1,4 +1,6 @@
 import re
+import bcrypt
+import uuid
 
 from scripts.logging.application_logging import logger
 from scripts.config.app_constants import Regex
@@ -38,3 +40,36 @@ class Validator:
         except Exception as ex:
             logger.error(f"Error in validate_contact_info function {ex}")
             return False, "Invalid Contact details"
+
+
+class PasswordHashing:
+    @staticmethod
+    def hash_password(password):
+        try:
+            logger.info("Hashing input password for safety")
+            salt = bcrypt.gensalt()
+            return bcrypt.hashpw(password, salt)
+        except Exception as ex:
+            logger.error(f"Error in Hashing Password {ex}")
+            raise Exception(f"Unable to Hash Password {ex}")
+
+    @staticmethod
+    def verify_password(hashed_password, password):
+        try:
+            logger.info("Matching Hashed Password and input password")
+            bcrypt.checkpw(password, hashed_password)
+        except Exception as ex:
+            logger.error(f"Error in Verifying Password {ex}")
+            raise Exception(f"Unable to Verify Password {ex}")
+
+
+class GenerateID:
+
+    @staticmethod
+    def generate_unique_id(prefix):
+        try:
+            unique_id = str(uuid.uuid4().hex)[:10]
+            return f"{prefix}_{unique_id}"
+        except Exception as ex:
+            logger.error(f"Error in Generating Unique ID {ex}")
+            raise Exception(f"Unable to Generate Unique ID {ex}")
