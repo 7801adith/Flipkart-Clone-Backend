@@ -5,7 +5,7 @@ from scripts.logging.application_logging import logger
 from scripts.config.app_configurations import APP_HOST, APP_PORT
 
 
-app = FastAPI()
+app = FastAPI(title="Flipkart")
 
 
 @app.get("/")
