@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from scripts.logging.application_logging import logger
+from scripts.config.app_configurations import APP_HOST, APP_PORT
 
 
 app = FastAPI()
@@ -14,4 +15,4 @@ def read_root():
 
 if __name__ == "__main__":
     logger.info("Starting Flipkart Backend")
-    uvicorn.run(app, host="localhost", port=5858)
+    uvicorn.run(app, host=APP_HOST, port=APP_PORT)
