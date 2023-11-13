@@ -7,3 +7,8 @@ class Signup(BaseModel):
     email_id: str
     phone_no: str
     password: str
+
+
+class Login(BaseModel):
+    user_id: str
+    password: str

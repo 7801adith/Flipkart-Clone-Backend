@@ -41,6 +41,24 @@ class Validator:
             logger.error(f"Error in validate_contact_info function {ex}")
             return False, "Invalid Contact details"
 
+    def classify_contact_info(self, key):
+        try:
+            logger.info("Inside classify_contact_info function")
+            logger.info("Differentiating the given input to identify key")
+            phone_result, phone_type = self.phone_validator(key)
+            if phone_result:
+                logger.info("Given Input is Phone number")
+                return "phoneNo"
+            email_result, email_type = self.email_validator(key)
+            if email_result:
+                logger.info("Given Input is Email Id")
+                return "emailId"
+            logger.error("Given Input is invalid, returning 'None' ")
+            return None
+        except Exception as ex:
+            logger.error(f"Error in classify_contact_info function {ex}")
+
+
 
 class PasswordHashing:
     @staticmethod
@@ -48,7 +66,7 @@ class PasswordHashing:
         try:
             logger.info("Hashing input password for safety")
             salt = bcrypt.gensalt()
-            return bcrypt.hashpw(password, salt)
+            return bcrypt.hashpw(password.encode(), salt)
         except Exception as ex:
             logger.error(f"Error in Hashing Password {ex}")
             raise Exception(f"Unable to Hash Password {ex}")
@@ -56,8 +74,8 @@ class PasswordHashing:
     @staticmethod
     def verify_password(hashed_password, password):
         try:
-            logger.info("Matching Hashed Password and input password")
-            bcrypt.checkpw(password, hashed_password)
+            logger.info("Verifying Hashed Password and input password")
+            return bcrypt.checkpw(password.encode(), hashed_password)
         except Exception as ex:
             logger.error(f"Error in Verifying Password {ex}")
             raise Exception(f"Unable to Verify Password {ex}")
@@ -69,7 +87,7 @@ class GenerateID:
     def generate_unique_id(prefix):
         try:
             unique_id = str(uuid.uuid4().hex)[:10]
-            return f"{prefix}_{unique_id}"
+            return f"{prefix}{unique_id}"
         except Exception as ex:
             logger.error(f"Error in Generating Unique ID {ex}")
             raise Exception(f"Unable to Generate Unique ID {ex}")
