@@ -26,3 +26,20 @@ class MongoUtility:
         finally:
             logger.info("Closing Mongo Connection")
             client.close()
+
+    def fetch_mongo_record(self, collection_name, query, projection={}):
+        client = self.connect_cursor()
+        try:
+            logger.info("Inside fetch_mongo_record function")
+            projection.update({"_id": 0})
+            query.update({"delete": 0})
+            record = client[collection_name].find_one(query, projection)
+            return record
+        except Exception as ex:
+            logger.error(f"Error in fetching record {ex}")
+            raise Exception(f"Unable to fetch record {ex}")
+        finally:
+            logger.info("Closing Mongo Connection")
+            client.close()
+
+
