@@ -58,3 +58,27 @@ class UserManagement:
         except Exception as ex:
             logger.error(f"Error in user_login function, Failed to login user {ex}")
             raise Exception(f"Unable to login user {ex}")
+
+    @staticmethod
+    def forgot_password(req_json):
+        try:
+            logger.info("Inside forgot_password function")
+            key = Validator().classify_contact_info(req_json.user_id)
+            if not key:
+                logger.error("Invalid Input: Not Phone number or Email")
+                return {'status': 1, "message": "Please Enter Valid Email id or Phone"}
+            record = MongoUtility().fetch_mongo_record(MongoCollections.user_collection,
+                                                       {key: req_json.user_id},
+                                                       {"userId": 1})
+            if not record:
+                logger.error("User details not found")
+                return {'status': 1, "message": "Account not found, Please signup"}
+            hashed_pwd = PasswordHashing.hash_password(req_json.password)
+            time_stamp = int(time.time())
+            update = {"$set": {"password": hashed_pwd, "modifiedAt": str(time_stamp)}}
+            MongoUtility().update_mongo_record(MongoCollections.user_collection,
+                                               {"userId": record.get("userId")}, update)
+            return {'status': 0, 'message': "Password Updated Successfully"}
+        except Exception as ex:
+            logger.error(f"Error in forgot_password function, Failed to change password {ex}")
+            raise Exception(f"Unable to change password {ex}")

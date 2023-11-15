@@ -9,6 +9,7 @@ class Routes:
 class UserEndpoints:
     login = '/login'
     signup = '/signup'
+    forgot_password = '/forgot_password'
 
 
 class MongoCollections:

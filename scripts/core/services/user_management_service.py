@@ -35,3 +35,16 @@ def user_login(req_json: Login):
         return response
     except Exception as ex:
         logger.error(f"Error in {UserEndpoints.login} Endpoint {ex}")
+
+
+@user_route.post(UserEndpoints.forgot_password)
+def forgot_password(req_json: Login):
+    try:
+        logger.info(f"Inside {UserEndpoints.forgot_password} Endpoint")
+        response = UserManagement().forgot_password(req_json)
+        return response
+    except Exception as ex:
+        logger.error(f"Error in {UserEndpoints.forgot_password} Endpoint {ex}")
+
+
+

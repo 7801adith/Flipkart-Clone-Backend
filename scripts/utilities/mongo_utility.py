@@ -42,3 +42,17 @@ class MongoUtility:
         finally:
             logger.info("Closing Mongo Connection")
             client.close()
+
+    def update_mongo_record(self, collection_name, condition, update):
+        database, client = self.connect_cursor()
+        try:
+            condition.update({"delete": 0})
+            logger.info("Inside update_mongo_record function")
+            status = database[collection_name].update_one(condition, update)
+            return status
+        except Exception as ex:
+            logger.error(f"Error in Updating record {ex}")
+            raise Exception(f"Unable to Update record {ex}")
+        finally:
+            logger.info("Closing Mongo Connection")
+            client.close()
